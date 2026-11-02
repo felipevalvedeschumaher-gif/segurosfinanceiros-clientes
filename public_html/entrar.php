@@ -22,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 echo sf_layout_inicio('Área da empresa');
+echo sf_nav_publico('entrar');
 ?>
-<section class="hero"><div class="wrap"><h1>Área da empresa</h1><p>Acompanhe seu limite e solicite depósito recursal.</p></div></section>
+<section class="hero"><div class="wrap"><h1>Área da empresa</h1><p>Acompanhe seu limite, peça cotações de seguro garantia e solicite depósito recursal.</p></div></section>
 <main class="wrap main"><form class="card" method="post">
   <input type="hidden" name="csrf" value="<?= e(sf_csrf_token()) ?>">
   <?php if ($erro): ?><div class="alert alert-error"><?= e($erro) ?></div><?php endif; ?>

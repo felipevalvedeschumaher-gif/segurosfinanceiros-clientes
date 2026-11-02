@@ -21,11 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else {
             $cliente = find_client_by_cnpj($cnpj);
             if (!$cliente) {
+                // Empresa nova: entra na carteira de felipe.schumaher@redegarantia.com.br, origem portal.
+                // Empresa existente: o acesso se liga ao CNPJ sem mudar o dono.
                 $cliente = cliente_criar_direto($cnpj, [
                     'razao_social' => clean_cell($f['razao']),
                     'email' => strtolower($f['email']),
                     'telefone' => clean_cell($f['telefone']),
-                ]);
+                ], DEPOSITO_ORIGEM_PORTAL, DEPOSITO_DONO_PORTAL);
             }
             $msg = empresa_criar_acesso($cliente, $f['email'], $senha, $f['nome']);
             if ($msg !== '') $erro = $msg;
@@ -42,9 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 echo sf_layout_inicio('Cadastro da empresa');
+echo sf_nav_publico('cadastrar');
 ?>
 <section class="hero"><div class="wrap"><h1>Cadastre a empresa</h1><p>Se a empresa já estiver na base, o acesso se liga ao mesmo CNPJ.</p></div></section>
-<main class="wrap main"><form class="card" method="post" id="formCad">
+<main class="wrap main"><form class="card" method="post" id="formCad" data-envio-overlay="Criando seu acesso, não feche esta página...">
   <input type="hidden" name="csrf" value="<?= e(sf_csrf_token()) ?>">
   <?php if ($erro): ?><div class="alert alert-error"><?= e($erro) ?></div><?php endif; ?>
   <div class="grid2">
@@ -80,4 +83,5 @@ echo sf_layout_inicio('Cadastro da empresa');
   });
 })();
 </script>
+<?= sf_overlay() ?>
 <?= sf_layout_fim() ?>

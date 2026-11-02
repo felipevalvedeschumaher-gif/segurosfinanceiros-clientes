@@ -2,6 +2,27 @@
 require_once dirname(__DIR__) . '/private/bootstrap.php';
 
 $token = trim((string)($_GET['p'] ?? $_POST['p'] ?? ''));
+if ($token === '') {
+    // Sem link de parceiro: página inicial do portal da empresa (Entrar / Criar cadastro).
+    require_once dirname(__DIR__) . '/private/empresa_portal.php';
+    $logada = sf_empresa();
+    echo sf_layout_inicio('Área da empresa');
+    echo sf_nav_publico('inicio');
+    echo '<section class="hero"><div class="wrap"><h1>Área da empresa <span class="gold-text">Seguros Financeiros</span></h1>'
+        . '<p>Acompanhe o limite da sua empresa, peça cotações de seguro garantia e solicite depósito recursal em um só lugar.</p>'
+        . '<div class="sf-landing-acoes">'
+        . ($logada
+            ? '<a class="btn-gold" href="/painel.php">Ir para o painel</a>'
+            : '<a class="btn-gold" href="/entrar.php">Entrar</a><a class="btn-outline" href="/cadastrar.php">Criar cadastro</a>')
+        . '</div></div></section>'
+        . '<main class="wrap main"><div class="sf-cards">'
+        . '<section class="card"><h2>Limite de crédito</h2><p>Peça a análise ou revisão do limite da empresa e acompanhe o status.</p></section>'
+        . '<section class="card"><h2>Cotação de seguro garantia</h2><p>Judicial, recursal, licitação, execução de contrato e outras modalidades.</p></section>'
+        . '<section class="card"><h2>Depósito recursal</h2><p>Envie a demanda com os dados do processo e receba a apólice ou guia por aqui.</p></section>'
+        . '</div></main>';
+    echo sf_layout_fim();
+    exit;
+}
 $parceiro = sf_parceiro_por_token($token);
 if (!$parceiro) {
     http_response_code(404);

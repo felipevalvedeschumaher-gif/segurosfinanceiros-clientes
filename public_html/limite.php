@@ -44,16 +44,16 @@ try {
     app_log('SF limite lista: ' . $ex->getMessage());
 }
 
-echo sf_layout_inicio('Limite');
+echo sf_layout_inicio('Pedir limite');
 echo sf_nav('limite');
 ?>
 <main class="wrap main">
   <section class="card">
-    <h1>Limite</h1>
+    <h1>Pedir limite</h1>
     <p>Status atual: <strong><?= e($cliente['status_limite'] ?: 'Em análise') ?></strong></p>
-    <?php if (isset($_GET['ok'])): ?><div class="alert alert-error" style="background:#ecfdf3;color:#166534;border-color:#86efac">Solicitação enviada.</div><?php endif; ?>
+    <?php if (isset($_GET['ok'])): ?><div class="alert-ok">Solicitação enviada.</div><?php endif; ?>
     <?php if ($erro): ?><div class="alert alert-error"><?= e($erro) ?></div><?php endif; ?>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" data-envio-overlay="Enviando sua demanda, não feche esta página...">
       <input type="hidden" name="csrf" value="<?= e(sf_csrf_token()) ?>">
       <label>O que você precisa *<textarea name="descricao" rows="5" required><?= e($descricao) ?></textarea></label>
       <label>Documentos *<input type="file" name="documentos[]" multiple required></label>
@@ -68,4 +68,5 @@ echo sf_nav('limite');
     </ul>
   </section>
 </main>
+<?= sf_overlay() ?>
 <?= sf_layout_fim() ?>

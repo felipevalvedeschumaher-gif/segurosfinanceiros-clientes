@@ -33,17 +33,44 @@ function sf_exigir_empresa()
     return $cliente;
 }
 
+/** Menu da empresa logada: barra visível logo abaixo do cabeçalho. */
 function sf_nav($ativo)
 {
     $itens = [
-        'painel' => ['/painel.php', 'Início'],
-        'limite' => ['/limite.php', 'Limite'],
+        'painel' => ['/painel.php', 'Painel'],
+        'limite' => ['/limite.php', 'Pedir limite'],
+        'cotacao' => ['/cotacao.php', 'Cotação seguro garantia'],
         'deposito' => ['/deposito.php', 'Depósito recursal'],
     ];
-    $html = '<nav class="emp-nav wrap">';
+    $emp = sf_empresa();
+    $html = sf_menu_css() . '<nav class="sf-menu" aria-label="Menu da empresa"><div class="wrap sf-menu-in">';
     foreach ($itens as $k => $it) {
-        $html .= '<a href="' . $it[0] . '"' . ($ativo === $k ? ' class="on"' : '') . '>' . $it[1] . '</a>';
+        $html .= '<a href="' . $it[0] . '"' . ($ativo === $k ? ' class="on" aria-current="page"' : '') . '>' . e($it[1]) . '</a>';
     }
-    $html .= '<a href="/sair.php">Sair</a></nav>';
+    $html .= '<span class="sf-menu-user">' . e($emp['email'] ?? '') . '</span>'
+        . '<a class="sf-menu-sair" href="/sair.php">Sair</a></div></nav>';
     return $html;
+}
+
+/** Menu das páginas públicas (sem login). */
+function sf_nav_publico($ativo = '')
+{
+    if (sf_empresa()) return sf_nav($ativo);
+    $html = sf_menu_css() . '<nav class="sf-menu" aria-label="Menu"><div class="wrap sf-menu-in">'
+        . '<a href="/"' . ($ativo === 'inicio' ? ' class="on" aria-current="page"' : '') . '>Início</a>'
+        . '<a href="/entrar.php"' . ($ativo === 'entrar' ? ' class="on" aria-current="page"' : '') . '>Entrar</a>'
+        . '<a class="sf-menu-cta' . ($ativo === 'cadastrar' ? ' on' : '') . '" href="/cadastrar.php">Criar cadastro</a>'
+        . '</div></nav>';
+    return $html;
+}
+
+function sf_menu_css()
+{
+    return '<link rel="stylesheet" href="/assets/portal.css?v=1">';
+}
+
+/** Mesma tela "Enviando…" usada nos formulários da plataforma. */
+function sf_overlay()
+{
+    return deposito_overlay_html();
 }
