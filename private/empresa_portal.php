@@ -24,6 +24,13 @@ function sf_exigir_empresa()
         header('Location: /entrar.php', true, 303);
         exit;
     }
+    // A cada página: o acesso precisa continuar ativo (pendente/recusado/bloqueado derruba a sessão).
+    $acesso = empresa_por_email($e['email'] ?? '');
+    if (!$acesso || empresa_status($acesso) !== 'ativo' || cnpj_digits($acesso['cnpj'] ?? '') !== ($e['cnpj'] ?? '')) {
+        unset($_SESSION['sf_empresa']);
+        header('Location: /entrar.php', true, 303);
+        exit;
+    }
     $cliente = find_client_by_cnpj($e['cnpj']);
     if (!$cliente) {
         unset($_SESSION['sf_empresa']);

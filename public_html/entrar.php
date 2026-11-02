@@ -12,8 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ensure_sheet_structures();
         if (!sf_csrf_ok()) $erro = 'Sessão expirada. Tente novamente.';
         else {
-            $acesso = empresa_autenticar($email, $senha);
-            if (!$acesso) $erro = 'E-mail ou senha inválidos.';
+            $status = null;
+            $acesso = empresa_autenticar($email, $senha, $status);
+            if (!$acesso && $status === 'pendente') $erro = 'Seu cadastro está em análise. Avisaremos por e-mail quando o acesso for liberado.';
+            elseif (!$acesso && $status !== null) $erro = 'Seu cadastro foi recusado. Em caso de dúvida, fale com a nossa equipe.';
+            elseif (!$acesso) $erro = 'E-mail ou senha inválidos.';
             else { sf_entrar_empresa($acesso); header('Location: /painel.php'); exit; }
         }
     } catch (Exception $ex) {
